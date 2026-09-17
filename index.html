@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>秋招工作台 · 项目管理方向</title>
+<style>
+:root{
+  --bg:#f5f7fb; --panel:#ffffff; --text:#152033; --muted:#6b768a; --line:#e7ebf2;
+  --brand:#3157d5; --brand2:#5c7cff; --ok:#1f9d66; --warn:#d89a24; --bad:#d34f4f;
+  --shadow:0 10px 30px rgba(33,54,100,.08); --radius:18px;
+}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,"PingFang SC","Microsoft Yahei",system-ui,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}.app{min-height:100vh}
+header{background:linear-gradient(135deg,#243f9b 0%,#4264e7 65%,#6a83ff 100%);color:#fff;padding:26px 32px 22px;position:sticky;top:0;z-index:20;box-shadow:0 6px 22px rgba(29,51,121,.18)}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;max-width:1500px;margin:auto}
+h1{font-size:26px;margin:0 0 6px}.subtitle{opacity:.85;font-size:14px}
+.header-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{border:0;border-radius:12px;padding:10px 14px;cursor:pointer;transition:.18s}
+.btn:hover{transform:translateY(-1px)} .btn.light{background:#fff;color:#2f4fc8}.btn.ghost{background:rgba(255,255,255,.13);color:#fff;border:1px solid rgba(255,255,255,.28)}
+main{max-width:1500px;margin:22px auto;padding:0 22px 40px}
+.metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:18px}
+.metric{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+.metric .label{font-size:12px;color:var(--muted)}.metric .num{font-size:28px;font-weight:750;margin-top:4px}.metric small{color:var(--muted)}
+.nav{display:flex;gap:10px;margin:12px 0 18px}.tab{background:#edf1fb;border:1px solid #dfe5f3;color:#526079}.tab.active{background:var(--text);color:#fff;border-color:var(--text)}
+.panel{display:none}.panel.active{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}.section-title h2{font-size:18px;margin:0}.hint{font-size:12px;color:var(--muted)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.toolbar input,.toolbar select,.field input,.field textarea,.field select{border:1px solid #dfe5ee;border-radius:11px;padding:10px 12px;background:#fff;color:var(--text);outline:none}
+.toolbar input:focus,.toolbar select:focus,.field input:focus,.field textarea:focus{border-color:#91a5ff;box-shadow:0 0 0 3px rgba(75,104,230,.1)}
+.toolbar input{min-width:220px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{font-size:12px;color:#65718a;background:#f8faff;position:sticky;top:0}td{font-size:13px}
+.badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:650;background:#edf2ff;color:#3957c9}.score{font-weight:800}.score.high{color:var(--ok)}.score.mid{color:var(--warn)}.score.low{color:var(--bad)}
+.link{color:var(--brand);text-decoration:none}.mini{padding:6px 9px;border-radius:9px;font-size:12px}
+.primary{background:var(--brand);color:#fff}.secondary{background:#edf2ff;color:#3753bd}.danger{background:#fff0f0;color:#b13f3f}.success{background:#eaf7f1;color:#197552}
+.kanban{display:grid;grid-template-columns:repeat(7,minmax(210px,1fr));gap:12px;overflow-x:auto;padding-bottom:8px}.col{background:#f6f8fc;border:1px solid var(--line);border-radius:16px;min-height:420px;padding:10px}.col h3{font-size:13px;margin:4px 4px 10px;display:flex;justify-content:space-between}.count{color:var(--muted)}
+.job-card{background:#fff;border:1px solid #e3e8f1;border-radius:13px;padding:12px;margin-bottom:10px;box-shadow:0 4px 14px rgba(24,43,84,.05);cursor:grab}.job-card strong{display:block;font-size:13px}.job-card .meta{font-size:11px;color:var(--muted);margin-top:4px}.job-card .actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{display:flex;flex-direction:column;gap:7px;margin-bottom:12px}.field label{font-size:12px;color:#5f6a7d;font-weight:650}.field textarea{min-height:180px;resize:vertical}.drop{border:1.5px dashed #bfc9dd;background:#fafcff;border-radius:14px;padding:18px;text-align:center;color:var(--muted)}
+.result{background:#f8faff;border:1px solid #e5eaf4;border-radius:14px;padding:14px;min-height:140px;white-space:pre-wrap;line-height:1.65;font-size:13px}
+.keyword-list{display:flex;flex-wrap:wrap;gap:6px}.kw{font-size:11px;background:#edf2ff;color:#3753bd;padding:5px 8px;border-radius:999px}.empty{color:#8a95aa;text-align:center;padding:34px 12px}
+.notice{background:#fff8e9;border:1px solid #f2dfb3;color:#805b15;border-radius:12px;padding:10px 12px;font-size:12px;margin-bottom:12px}
+.modal{position:fixed;inset:0;background:rgba(12,22,48,.38);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}.modal.show{display:flex}.modal-card{width:min(720px,96vw);max-height:88vh;overflow:auto;background:#fff;border-radius:18px;padding:20px}.modal-card h3{margin-top:0}
+.footer-note{font-size:11px;color:#8a95aa;margin-top:14px}
+@media(max-width:1100px){.metrics{grid-template-columns:repeat(3,1fr)}.grid2{grid-template-columns:1fr}}
+@media(max-width:700px){header{padding:18px}.top{flex-direction:column}.metrics{grid-template-columns:repeat(2,1fr)}main{padding:0 12px 30px}.nav{overflow:auto}}
+
+.profile-grid{display:grid;grid-template-columns:1.05fr 1.25fr;gap:16px}
+.profile-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.profile-box{background:#f8faff;border:1px solid #e6ebf5;border-radius:14px;padding:13px}
+.profile-box b{display:block;font-size:12px;color:#5f6a7d;margin-bottom:6px}
+.tags-editor{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.tag-edit{display:inline-flex;align-items:center;gap:6px;background:#edf2ff;color:#3753bd;border-radius:999px;padding:7px 10px;font-size:12px}
+.tag-edit button{border:0;background:transparent;color:#6c78a0;cursor:pointer;padding:0}
+.direction-row{display:flex;gap:8px;flex-wrap:wrap}
+.direction-pill{border:1px solid #ccd5e8;background:#fff;color:#4d5a73;border-radius:999px;padding:8px 11px;cursor:pointer;font-size:12px}
+.direction-pill.active{background:#213a97;color:#fff;border-color:#213a97}
+.search-query{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#111827;color:#e5e7eb;border-radius:12px;padding:12px;line-height:1.6;font-size:12px;white-space:pre-wrap}
+.profile-status{font-size:12px;color:#6b768a}
+@media(max-width:1000px){.profile-grid{grid-template-columns:1fr}.profile-summary{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="top">
+    <div>
+      <h1>秋招工作台 · 项目管理方向</h1>
+      <div class="subtitle">岗位筛选 × 投递进度 × 简历优化｜2027届</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn ghost" onclick="exportData()">导出数据</button>
+      <button class="btn light" onclick="document.getElementById('importData').click()">导入备份</button>
+      <input id="importData" type="file" accept=".json" hidden onchange="importDataFile(event)">
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="metrics">
+    <div class="metric"><div class="label">岗位库</div><div class="num" id="mJobs">0</div><small>已收集</small></div>
+    <div class="metric"><div class="label">计划投递</div><div class="num" id="mPlan">0</div><small>待处理</small></div>
+    <div class="metric"><div class="label">面试中</div><div class="num" id="mInterview">0</div><small>AI面～终面</small></div>
+    <div class="metric"><div class="label">Offer</div><div class="num" id="mOffer">0</div><small>累计</small></div>
+    <div class="metric"><div class="label">被拒</div><div class="num" id="mRejected">0</div><small>累计</small></div>
+    <div class="metric"><div class="label">平均匹配度</div><div class="num" id="mAvg">0</div><small>岗位库</small></div>
+  </section>
+
+  <nav class="nav">
+    <button class="btn tab active" data-tab="profile">求职画像</button>
+    <button class="btn tab" data-tab="discover">工作筛选</button>
+    <button class="btn tab" data-tab="pipeline">投递进度</button>
+    <button class="btn tab" data-tab="resume">简历优化</button>
+  </nav>
+
+
+  <section id="profile" class="panel active">
+    <div class="profile-grid">
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h2>求职画像</h2>
+            <div class="hint">上传简历后自动提取教育、能力、项目与关键词；也可以手动补充求职方向。</div>
+          </div>
+          <button class="btn secondary" onclick="resetProfile()">重置画像</button>
+        </div>
+
+        <div class="drop">
+          <input id="profileResumeFile" type="file" accept=".pdf,.txt" onchange="buildProfileFromResume(event)">
+          <div id="profileResumeName" style="margin-top:8px">上传简历建立画像</div>
+        </div>
+
+        <div class="profile-summary" style="margin-top:14px">
+          <div class="profile-box"><b>教育背景</b><div id="pEducation">待识别</div></div>
+          <div class="profile-box"><b>语言能力</b><div id="pLanguage">待识别</div></div>
+          <div class="profile-box"><b>项目/实习关键词</b><div id="pExperience">待识别</div></div>
+          <div class="profile-box"><b>核心能力</b><div id="pStrength">待识别</div></div>
+        </div>
+
+        <div class="field" style="margin-top:14px">
+          <label>简历文本（可手动修正）</label>
+          <textarea id="profileResumeText" placeholder="上传后会自动读取，也可以直接粘贴简历文本" oninput="profileFromText()"></textarea>
+        </div>
+        <div class="profile-status" id="profileStatus">画像尚未建立</div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h2>求职偏好与抓取规则</h2>
+            <div class="hint">这些设置会直接影响岗位匹配度与“抓取今日岗位”的搜索关键词。</div>
+          </div>
+          <button class="btn primary" onclick="applyProfileToSearch()">应用到岗位筛选</button>
+        </div>
+
+        <div class="field">
+          <label>感兴趣的求职方向</label>
+          <div class="direction-row" id="presetDirections">
+            <button class="direction-pill" data-dir="项目管理" onclick="toggleDirection(this)">项目管理</button>
+            <button class="direction-pill" data-dir="项目运营" onclick="toggleDirection(this)">项目运营</button>
+            <button class="direction-pill" data-dir="PMO" onclick="toggleDirection(this)">PMO</button>
+            <button class="direction-pill" data-dir="业务运营" onclick="toggleDirection(this)">业务运营</button>
+            <button class="direction-pill" data-dir="商业运营" onclick="toggleDirection(this)">商业运营</button>
+            <button class="direction-pill" data-dir="管培生" onclick="toggleDirection(this)">管培生</button>
+            <button class="direction-pill" data-dir="用户研究" onclick="toggleDirection(this)">用户研究</button>
+            <button class="direction-pill" data-dir="策略/咨询" onclick="toggleDirection(this)">策略/咨询</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>手动添加方向</label>
+          <div style="display:flex;gap:8px">
+            <input id="customDirection" style="flex:1" placeholder="例如：品牌项目管理 / 商业策划">
+            <button class="btn secondary" onclick="addCustomDirection()">添加</button>
+          </div>
+          <div class="tags-editor" id="customDirectionTags"></div>
+        </div>
+
+        <div class="grid2">
+          <div class="field"><label>意向城市</label><input id="prefCities" placeholder="北京、上海、深圳、杭州…" oninput="saveProfilePrefs()"></div>
+          <div class="field"><label>毕业年份/校招批次</label><input id="prefGrad" value="2027届" oninput="saveProfilePrefs()"></div>
+        </div>
+
+        <div class="grid2">
+          <div class="field"><label>偏好行业/公司类型</label><input id="prefIndustry" placeholder="科技 / 消费 / 互联网 / 制造…" oninput="saveProfilePrefs()"></div>
+          <div class="field"><label>排除关键词</label><input id="excludeKeywords" placeholder="销售 / 纯技术开发…" oninput="saveProfilePrefs()"></div>
+        </div>
+
+        <div class="field">
+          <label>画像核心关键词（可编辑）</label>
+          <textarea id="profileKeywords" style="min-height:110px" oninput="saveProfilePrefs()" placeholder="自动提取并用于岗位匹配"></textarea>
+        </div>
+
+        <div class="field">
+          <label>网络抓取查询词</label>
+          <div id="generatedQuery" class="search-query">建立画像后自动生成</div>
+        </div>
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn primary" onclick="fetchJobsByProfile()">按画像抓取职位</button>
+          <button class="btn secondary" onclick="copySearchQuery()">复制搜索词</button>
+        </div>
+        <div class="footer-note">静态网页本身不能稳定后台抓取招聘网站。部署后可把求职画像 JSON 发送给 JOB_API_ENDPOINT，由后端/Serverless 服务执行每日搜索并返回岗位。</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="discover" class="panel">
+    <div class="card">
+      <div class="section-title">
+        <div>
+          <h2>工作筛选</h2>
+          <div class="hint">按你的简历关键词自动计算匹配度，并可一键加入投递进度。</div>
+        </div>
+        <div>
+          <button class="btn secondary" onclick="openAddJob()">手动添加岗位</button>
+          <button class="btn primary" onclick="fetchTodayJobs()">抓取今日岗位</button>
+        </div>
+      </div>
+      <div class="notice">“抓取今日岗位”已预留自动抓取接口。当前静态网页没有后台服务器时会使用示例数据；部署后把 <b>JOB_API_ENDPOINT</b> 配置为你的抓取接口即可自动更新。</div>
+      <div class="toolbar">
+        <input id="q" placeholder="搜索公司 / 岗位 / 关键词" oninput="renderJobs()">
+        <select id="dir" onchange="renderJobs()">
+          <option value="">全部方向</option><option>项目管理</option><option>项目运营</option><option>PMO</option><option>业务运营</option><option>商业运营</option><option>管培生</option>
+        </select>
+        <select id="minScore" onchange="renderJobs()">
+          <option value="0">全部匹配度</option><option value="70">≥ 70</option><option value="80">≥ 80</option><option value="90">≥ 90</option>
+        </select>
+        <select id="source" onchange="renderJobs()">
+          <option value="">全部来源</option><option>官网</option><option>Boss直聘</option><option>牛客</option><option>实习僧</option><option>其他</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>公司</th><th>岗位</th><th>城市</th><th>方向</th><th>来源</th><th>毕业要求</th><th>匹配度</th><th>关键词</th><th>操作</th></tr></thead>
+          <tbody id="jobRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="pipeline" class="panel">
+    <div class="card">
+      <div class="section-title">
+        <div><h2>投递进度</h2><div class="hint">拖拽岗位卡片切换阶段；也可通过卡片按钮更新状态。</div></div>
+        <button class="btn primary" onclick="openApplication()">新增投递</button>
+      </div>
+      <div class="kanban" id="kanban"></div>
+    </div>
+  </section>
+
+  <section id="resume" class="panel">
+    <div class="grid2">
+      <div class="card">
+        <div class="section-title"><div><h2>导入简历</h2><div class="hint">支持 PDF / TXT；PDF解析依赖浏览器加载 pdf.js。</div></div></div>
+        <div class="drop">
+          <input id="resumeFile" type="file" accept=".pdf,.txt" onchange="handleResume(event)">
+          <div id="resumeName" style="margin-top:8px">当前默认关键词已按你的现有简历预置</div>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <label>简历文本</label>
+          <textarea id="resumeText" placeholder="导入后自动读取；也可以直接粘贴简历文本"></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><div><h2>导入职位要求</h2><div class="hint">粘贴完整JD后进行岗位能力拆解与简历改写。</div></div></div>
+        <div class="field">
+          <label>公司 / 岗位</label>
+          <input id="targetRole" placeholder="例如：联想｜项目管理-非技术">
+        </div>
+        <div class="field">
+          <label>职位要求（JD）</label>
+          <textarea id="jdText" placeholder="粘贴岗位职责、任职要求、加分项"></textarea>
+        </div>
+        <button class="btn primary" onclick="optimizeResume()">分析并生成优化建议</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="section-title"><div><h2>优化结果</h2><div class="hint">本地规则引擎会先做关键词与结构匹配；如接入AI接口，可进一步生成自然语言改写。</div></div></div>
+      <div class="grid2">
+        <div>
+          <h3 style="font-size:14px">JD核心关键词</h3>
+          <div id="keywords" class="keyword-list"></div>
+          <h3 style="font-size:14px;margin-top:18px">匹配评估</h3>
+          <div id="matchResult" class="result">等待分析…</div>
+        </div>
+        <div>
+          <h3 style="font-size:14px">简历改写建议</h3>
+          <div id="rewriteResult" class="result">等待分析…</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+</div>
+
+<div class="modal" id="jobModal">
+  <div class="modal-card">
+    <h3 id="modalTitle">添加岗位</h3>
+    <div class="grid2">
+      <div class="field"><label>公司</label><input id="fCompany"></div>
+      <div class="field"><label>岗位</label><input id="fRole"></div>
+      <div class="field"><label>城市</label><input id="fCity"></div>
+      <div class="field"><label>方向</label><select id="fDirection"><option>项目管理</option><option>项目运营</option><option>PMO</option><option>业务运营</option><option>商业运营</option><option>管培生</option><option>其他</option></select></div>
+      <div class="field"><label>来源</label><input id="fSource" placeholder="官网 / Boss直聘 / 牛客…"></div>
+      <div class="field"><label>岗位链接</label><input id="fLink"></div>
+      <div class="field"><label>毕业要求</label><input id="fGrad" placeholder="例如 2026.09-2027.08"></div>
+      <div class="field"><label>状态</label><select id="fStatus"><option>计划投递</option><option>已投递</option><option>AI面</option><option>一面</option><option>二面</option><option>终面</option><option>Offer</option><option>被拒</option></select></div>
+    </div>
+    <div class="field"><label>JD摘要 / 关键词</label><textarea id="fJD" style="min-height:120px"></textarea></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px">
+      <button class="btn secondary" onclick="closeModal()">取消</button>
+      <button class="btn primary" onclick="saveJob()">保存</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
+<script>
+const JOB_API_ENDPOINT = ""; // 部署后填你的岗位抓取API地址
+const PROFILE_KEYWORDS = [
+  "项目管理","项目运营","PMO","需求分析","任务拆解","进度管理","风险管理","数据分析","跨团队协作",
+  "资源协调","项目计划","复盘","项目汇报","Excel","PowerPoint","英文","国际项目","用户需求","策略分析"
+];
+const defaultResume = `天津大学建筑学硕士，米兰理工大学双学位经历。项目经验包括NBS城市更新项目、医院建筑更新、BNCT案例研究、绿色生产性更新等。具备需求分析、任务拆解、场地与案例数据整理、SWOT分析、跨团队协作、项目汇报、项目推进与阶段复盘能力。熟练Excel、PowerPoint、Word，IELTS 7.5，具备英文学习与跨文化协作能力。`;
+
+let state = JSON.parse(localStorage.getItem("autumnRecruitmentState")||"null") || {
+  jobs:[
+    {id:crypto.randomUUID(),company:"联想",role:"项目管理-非技术",city:"",direction:"项目管理",source:"官网",link:"",grad:"2026.09-2027.08应届毕业生",
+     jd:"需求收集；项目计划；风险管控；进度跟踪；资源协调；数据分析；回归总结；系统化解决方案；项目文档",status:"计划投递",created:new Date().toISOString()}
+  ],
+  applications:[],
+  profile:{
+    education:"",
+    language:"",
+    experience:"",
+    strengths:"",
+    resumeText:"",
+    directions:["项目管理","项目运营","PMO","业务运营"],
+    customDirections:[],
+    cities:"",
+    grad:"2027届",
+    industry:"",
+    exclude:"",
+    keywords:"需求分析、任务拆解、项目计划、进度管理、风险管理、数据分析、跨团队协作、资源协调、项目汇报、复盘优化、Excel、PowerPoint、英文、国际项目、NBS"
+  }
+};
+
+if(!state.profile){
+  state.profile={education:"",language:"",experience:"",strengths:"",resumeText:"",directions:["项目管理","项目运营","PMO","业务运营"],customDirections:[],cities:"",grad:"2027届",industry:"",exclude:"",keywords:"需求分析、任务拆解、项目计划、进度管理、风险管理、数据分析、跨团队协作、资源协调、项目汇报、复盘优化、Excel、PowerPoint、英文、国际项目、NBS"};
+}
+function persist(){localStorage.setItem("autumnRecruitmentState",JSON.stringify(state));renderAll()}
+function scoreJob(job){
+  let text = `${job.role} ${job.jd} ${job.direction} ${job.company}`.toLowerCase();
+  const p = state.profile || {};
+  let score=10;
+  const dirs=[...(p.directions||[]),...(p.customDirections||[])];
+  dirs.forEach(d=>{if(d && text.includes(d.toLowerCase())) score+=16});
+  const kws=(p.keywords||"").split(/[、,，;\n]/).map(x=>x.trim()).filter(Boolean);
+  kws.forEach(k=>{if(text.includes(k.toLowerCase())) score+=4});
+  const excludes=(p.exclude||"").split(/[、,，;\n]/).map(x=>x.trim().toLowerCase()).filter(Boolean);
+  excludes.forEach(k=>{if(text.includes(k)) score-=18});
+  if(p.grad && (job.grad||"").includes(p.grad.replace("届",""))) score+=8;
+  return Math.max(0,Math.min(score,100));
+}
+function renderMetrics(){
+  document.getElementById("mJobs").textContent=state.jobs.length;
+  document.getElementById("mPlan").textContent=state.jobs.filter(x=>x.status==="计划投递").length;
+  document.getElementById("mInterview").textContent=state.applications.filter(x=>["AI面","一面","二面","终面"].includes(x.status)).length;
+  document.getElementById("mOffer").textContent=state.applications.filter(x=>x.status==="Offer").length;
+  document.getElementById("mRejected").textContent=state.applications.filter(x=>x.status==="被拒").length;
+  const avg=state.jobs.length?Math.round(state.jobs.reduce((s,j)=>s+scoreJob(j),0)/state.jobs.length):0;
+  document.getElementById("mAvg").textContent=avg;
+}
+function renderJobs(){
+  const q=document.getElementById("q").value.toLowerCase(), dir=document.getElementById("dir").value,
+        min=+document.getElementById("minScore").value, src=document.getElementById("source").value;
+  let list=state.jobs.filter(j=>{
+    const hay=`${j.company} ${j.role} ${j.jd}`.toLowerCase();
+    return (!q||hay.includes(q))&&(!dir||j.direction===dir)&&(!src||j.source===src)&&scoreJob(j)>=min;
+  }).sort((a,b)=>scoreJob(b)-scoreJob(a));
+  const tbody=document.getElementById("jobRows");
+  tbody.innerHTML=list.length?list.map(j=>{
+    const s=scoreJob(j), cls=s>=80?"high":s>=60?"mid":"low";
+    const kws=((state.profile?.keywords||"").split(/[、,，;\n]/).map(x=>x.trim()).filter(Boolean)).filter(k=>(`${j.role} ${j.jd}`).toLowerCase().includes(k.toLowerCase())).slice(0,5);
+    return `<tr>
+      <td><b>${esc(j.company)}</b></td><td>${esc(j.role)}</td><td>${esc(j.city||"-")}</td><td><span class="badge">${esc(j.direction)}</span></td>
+      <td>${esc(j.source||"-")}</td><td>${esc(j.grad||"-")}</td><td><span class="score ${cls}">${s}</span></td>
+      <td>${kws.map(k=>`<span class="kw">${esc(k)}</span>`).join(" ")||"-"}</td>
+      <td>
+        ${j.link?`<a class="link" href="${j.link}" target="_blank">打开</a> · `:""}
+        <button class="btn mini secondary" onclick="addToPipeline('${j.id}')">加入投递</button>
+        <button class="btn mini danger" onclick="deleteJob('${j.id}')">删除</button>
+      </td></tr>`;
+  }).join(""):`<tr><td colspan="9" class="empty">暂无符合条件的岗位</td></tr>`;
+}
+const stages=["已投递","AI面","一面","二面","终面","Offer","被拒"];
+function renderKanban(){
+  const root=document.getElementById("kanban");
+  root.innerHTML=stages.map(stage=>{
+    const apps=state.applications.filter(a=>a.status===stage);
+    return `<div class="col" ondragover="event.preventDefault()" ondrop="dropCard(event,'${stage}')">
+      <h3>${stage}<span class="count">${apps.length}</span></h3>
+      ${apps.map(a=>`<div class="job-card" draggable="true" ondragstart="dragCard(event,'${a.id}')">
+        <strong>${esc(a.company)} · ${esc(a.role)}</strong>
+        <div class="meta">${esc(a.city||"")} ${a.source?`｜${esc(a.source)}`:""}</div>
+        <div class="meta">更新：${new Date(a.updated||a.created).toLocaleDateString()}</div>
+        <div class="actions">
+          ${a.link?`<a class="link" href="${a.link}" target="_blank">岗位链接</a>`:""}
+          <button class="btn mini secondary" onclick="advance('${a.id}')">下一步</button>
+          <button class="btn mini danger" onclick="removeApp('${a.id}')">删除</button>
+        </div>
+      </div>`).join("")||`<div class="empty">暂无</div>`}
+    </div>`;
+  }).join("");
+}
+function addToPipeline(jobId){
+  const j=state.jobs.find(x=>x.id===jobId); if(!j)return;
+  if(!state.applications.some(a=>a.jobId===jobId)){
+    state.applications.push({id:crypto.randomUUID(),jobId,company:j.company,role:j.role,city:j.city,source:j.source,link:j.link,status:"已投递",created:new Date().toISOString(),updated:new Date().toISOString()});
+  }
+  j.status="已投递";persist();switchTab("pipeline");
+}
+function advance(id){
+  const a=state.applications.find(x=>x.id===id); if(!a)return;
+  const i=stages.indexOf(a.status); if(i>=0&&i<stages.length-1)a.status=stages[i+1];
+  a.updated=new Date().toISOString();persist();
+}
+function dragCard(e,id){e.dataTransfer.setData("text/plain",id)}
+function dropCard(e,stage){const id=e.dataTransfer.getData("text/plain");const a=state.applications.find(x=>x.id===id);if(a){a.status=stage;a.updated=new Date().toISOString();persist()}}
+function removeApp(id){state.applications=state.applications.filter(x=>x.id!==id);persist()}
+function deleteJob(id){state.jobs=state.jobs.filter(x=>x.id!==id);persist()}
+
+function openAddJob(){document.getElementById("modalTitle").textContent="添加岗位";document.getElementById("jobModal").classList.add("show")}
+function openApplication(){openAddJob();document.getElementById("fStatus").value="已投递"}
+function closeModal(){document.getElementById("jobModal").classList.remove("show")}
+function saveJob(){
+  const j={id:crypto.randomUUID(),company:val("fCompany"),role:val("fRole"),city:val("fCity"),direction:val("fDirection"),source:val("fSource"),
+    link:val("fLink"),grad:val("fGrad"),status:val("fStatus"),jd:val("fJD"),created:new Date().toISOString()};
+  if(!j.company||!j.role){alert("请填写公司和岗位");return}
+  state.jobs.push(j);
+  if(j.status!=="计划投递"){
+    state.applications.push({id:crypto.randomUUID(),jobId:j.id,company:j.company,role:j.role,city:j.city,source:j.source,link:j.link,status:j.status,created:new Date().toISOString(),updated:new Date().toISOString()})
+  }
+  ["fCompany","fRole","fCity","fSource","fLink","fGrad","fJD"].forEach(id=>document.getElementById(id).value="");
+  closeModal();persist();
+}
+function val(id){return document.getElementById(id).value.trim()}
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
+
+async function fetchTodayJobs(){ return fetchJobsByProfile(); }
+
+async function fetchJobsByProfile(){
+  const p=state.profile||{};
+  const payload={
+    profile:p,
+    directions:[...(p.directions||[]),...(p.customDirections||[])],
+    cities:p.cities||"",
+    grad:p.grad||"2027届",
+    industry:p.industry||"",
+    keywords:(p.keywords||"").split(/[、,，;\n]/).map(x=>x.trim()).filter(Boolean),
+    exclude:(p.exclude||"").split(/[、,，;\n]/).map(x=>x.trim()).filter(Boolean)
+  };
+  if(JOB_API_ENDPOINT){
+    try{
+      const r=await fetch(JOB_API_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+      const data=await r.json();
+      (data.jobs||data).forEach(j=>state.jobs.push({...j,id:j.id||crypto.randomUUID(),created:new Date().toISOString(),status:j.status||"计划投递"}));
+      persist(); alert("已按求职画像同步岗位");
+      return;
+    }catch(e){alert("抓取接口调用失败，将载入与画像匹配的示例岗位。")}
+  }
+  const dirs=payload.directions.length?payload.directions:["项目管理"];
+  const demo=dirs.slice(0,3).map((d,i)=>({
+    company:["示例科技集团","示例消费公司","示例互联网平台"][i%3],
+    role:`${d}${d==="PMO"?"":"校招"}`,
+    city:(p.cities||"北京、上海").split(/[、,，]/)[i%2]||"北京",
+    direction:d,
+    source:"官网",
+    link:"",
+    grad:p.grad||"2027届",
+    jd:`负责${d}相关工作，包括需求分析、项目计划、数据分析、跨团队协调、进度跟踪、风险管理与复盘优化`,
+    status:"计划投递"
+  }));
+  demo.forEach(j=>state.jobs.push({...j,id:crypto.randomUUID(),created:new Date().toISOString()}));
+  persist();
+  switchTab("discover");
+}
+async function handleResume(e){
+  const f=e.target.files[0]; if(!f)return;
+  document.getElementById("resumeName").textContent=f.name;
+  if(f.type==="text/plain"||f.name.endsWith(".txt")){
+    document.getElementById("resumeText").value=await f.text();return;
+  }
+  if(f.name.toLowerCase().endsWith(".pdf")){
+    try{
+      const mod=await import("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs");
+      mod.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
+      const buf=await f.arrayBuffer(), pdf=await mod.getDocument({data:buf}).promise; let text="";
+      for(let i=1;i<=pdf.numPages;i++){const p=await pdf.getPage(i);const c=await p.getTextContent();text+=c.items.map(x=>x.str).join(" ")+"\n";}
+      document.getElementById("resumeText").value=text;
+    }catch(err){document.getElementById("resumeText").placeholder="PDF自动解析失败，请直接粘贴简历文本。"}
+  }
+}
+function optimizeResume(){
+  const resume=(document.getElementById("resumeText").value||defaultResume).toLowerCase();
+  const jd=document.getElementById("jdText").value.trim();
+  if(!jd){alert("请先粘贴职位要求");return}
+  const dict=["需求分析","项目计划","项目管理","进度管理","进度跟踪","风险管理","资源协调","跨部门沟通","跨团队协作","数据分析","复盘","流程优化","执行力","逻辑思维","文档","Excel","PowerPoint","英文","用户需求","项目交付","问题解决","业务分析","PMO","运营"];
+  const found=dict.filter(k=>jd.toLowerCase().includes(k.toLowerCase()));
+  document.getElementById("keywords").innerHTML=found.map(k=>`<span class="kw">${esc(k)}</span>`).join("")||"<span class='hint'>未提取到预置关键词，可补充岗位文本。</span>";
+  const matched=found.filter(k=>resume.includes(k.toLowerCase()));
+  const missing=found.filter(k=>!resume.includes(k.toLowerCase()));
+  const rate=found.length?Math.round(matched.length/found.length*100):0;
+  document.getElementById("matchResult").textContent=
+`关键词覆盖率：${rate}%
+已匹配：${matched.join("、")||"暂无"}
+待补强：${missing.join("、")||"暂无"}
+
+建议：优先用真实项目经历补足“项目计划 / 进度 / 风险 / 数据 / 协调 / 复盘”六类证据，不要只在技能栏堆关键词。`;
+
+  const role=document.getElementById("targetRole").value||"目标岗位";
+  document.getElementById("rewriteResult").textContent=
+`【${role} 定向优化建议】
+
+1. NBS项目建议放在项目经历第一位：
+- 项目拆解：将约3.3万㎡场地问题拆解为社会、技术、环境、经济、政策、可达性6个维度。
+- 数据分析：负责场地数据、案例与指标整理，通过SWOT/策略矩阵比较NBS方案，为方案选择提供依据。
+- 推进协同：跟踪阶段成果并根据评审意见调整优先级，识别空间冲突、功能适配及实施可行性问题。
+
+2. 中建西南院经历：
+突出“需求调研—案例归纳—方案支持—团队沟通”，弱化纯建模描述。
+
+3. 技能栏：
+Excel、PowerPoint、Word放在建筑软件之前；将“数据整理、项目汇报、信息可视化、英文协作”作为能力标签。
+
+4. 对JD中未覆盖的能力：
+${missing.length?missing.map(x=>"• "+x+"：请用真实经历补证据").join("\n"):"当前关键词覆盖较完整，重点提升量化表达。"}
+
+5. 修改原则：
+每条经历尽量采用“动作 + 方法 + 结果/用途”，避免写“体现了XX能力”。`;
+}
+
+
+async function readResumeFile(file){
+  if(file.type==="text/plain"||file.name.toLowerCase().endsWith(".txt")) return await file.text();
+  if(file.name.toLowerCase().endsWith(".pdf")){
+    const mod=await import("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs");
+    mod.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
+    const buf=await file.arrayBuffer(), pdf=await mod.getDocument({data:buf}).promise; let text="";
+    for(let i=1;i<=pdf.numPages;i++){const page=await pdf.getPage(i);const c=await page.getTextContent();text+=c.items.map(x=>x.str).join(" ")+"\n";}
+    return text;
+  }
+  return "";
+}
+async function buildProfileFromResume(e){
+  const f=e.target.files[0]; if(!f)return;
+  document.getElementById("profileResumeName").textContent=f.name;
+  try{
+    const text=await readResumeFile(f);
+    document.getElementById("profileResumeText").value=text;
+    state.profile.resumeText=text;
+    profileFromText();
+  }catch(err){
+    document.getElementById("profileStatus").textContent="PDF自动解析失败，请直接粘贴简历文本。";
+  }
+}
+function profileFromText(){
+  const text=document.getElementById("profileResumeText").value||"";
+  state.profile.resumeText=text;
+  const low=text.toLowerCase();
+
+  const edu=[];
+  ["天津大学","米兰理工大学","Politecnico di Milano","加泰罗尼亚理工大学","UPC","硕士","本科"].forEach(k=>{if(low.includes(k.toLowerCase())&&!edu.includes(k))edu.push(k)});
+  const lang=[];
+  ["IELTS","CET-6","CET-4","英语","英文"].forEach(k=>{if(low.includes(k.toLowerCase())&&!lang.includes(k))lang.push(k)});
+  const exp=[];
+  ["NBS","城市更新","BNCT","医院","绿色生产性更新","项目经济评估","国际项目","科研项目"].forEach(k=>{if(low.includes(k.toLowerCase())&&!exp.includes(k))exp.push(k)});
+  const strengths=[];
+  ["需求分析","数据分析","跨团队","跨部门","项目管理","项目计划","进度","风险","资源协调","SWOT","Excel","PowerPoint","汇报","复盘"].forEach(k=>{if(low.includes(k.toLowerCase())&&!strengths.includes(k))strengths.push(k)});
+
+  // If the uploaded resume is sparse, retain user's existing known defaults rather than leaving blank.
+  state.profile.education=edu.join("、")||state.profile.education||"待补充";
+  state.profile.language=lang.join("、")||state.profile.language||"待补充";
+  state.profile.experience=exp.join("、")||state.profile.experience||"待补充";
+  state.profile.strengths=strengths.join("、")||state.profile.strengths||"待补充";
+
+  const allKw=[...strengths,...exp,"需求分析","任务拆解","项目计划","数据分析","跨团队协作","项目汇报","Excel","PowerPoint","英文"]
+    .filter((x,i,a)=>x&&a.indexOf(x)===i);
+  if(allKw.length) state.profile.keywords=allKw.join("、");
+  saveProfilePrefs(false);
+  renderProfile();
+  document.getElementById("profileStatus").textContent="已根据简历更新求职画像";
+}
+function toggleDirection(btn){
+  const d=btn.dataset.dir;
+  state.profile.directions=state.profile.directions||[];
+  if(state.profile.directions.includes(d)) state.profile.directions=state.profile.directions.filter(x=>x!==d);
+  else state.profile.directions.push(d);
+  persist();
+}
+function addCustomDirection(){
+  const input=document.getElementById("customDirection"), d=input.value.trim();
+  if(!d)return;
+  state.profile.customDirections=state.profile.customDirections||[];
+  if(!state.profile.customDirections.includes(d)) state.profile.customDirections.push(d);
+  input.value="";persist();
+}
+function removeCustomDirection(d){
+  state.profile.customDirections=(state.profile.customDirections||[]).filter(x=>x!==d);persist();
+}
+function saveProfilePrefs(doPersist=true){
+  const get=id=>document.getElementById(id)?.value??"";
+  state.profile.cities=get("prefCities");
+  state.profile.grad=get("prefGrad");
+  state.profile.industry=get("prefIndustry");
+  state.profile.exclude=get("excludeKeywords");
+  state.profile.keywords=get("profileKeywords")||state.profile.keywords||"";
+  if(doPersist) persist();
+}
+function renderProfile(){
+  const p=state.profile||{};
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v||"待识别"};
+  set("pEducation",p.education); set("pLanguage",p.language); set("pExperience",p.experience); set("pStrength",p.strengths);
+  if(document.getElementById("profileResumeText") && !document.getElementById("profileResumeText").value) document.getElementById("profileResumeText").value=p.resumeText||"";
+  ["prefCities","prefGrad","prefIndustry","excludeKeywords","profileKeywords"].forEach(id=>{
+    const map={prefCities:"cities",prefGrad:"grad",prefIndustry:"industry",excludeKeywords:"exclude",profileKeywords:"keywords"};
+    const el=document.getElementById(id); if(el)el.value=p[map[id]]||"";
+  });
+  document.querySelectorAll(".direction-pill").forEach(btn=>btn.classList.toggle("active",(p.directions||[]).includes(btn.dataset.dir)));
+  const tags=document.getElementById("customDirectionTags");
+  if(tags) tags.innerHTML=(p.customDirections||[]).map(d=>`<span class="tag-edit">${esc(d)} <button onclick="removeCustomDirection('${d.replace(/'/g,"\\'")}')">×</button></span>`).join("");
+  generateSearchQuery();
+}
+function generateSearchQuery(){
+  const p=state.profile||{};
+  const dirs=[...(p.directions||[]),...(p.customDirections||[])];
+  const kws=(p.keywords||"").split(/[、,，;\n]/).map(x=>x.trim()).filter(Boolean).slice(0,8);
+  const city=p.cities?` 城市：${p.cities}`:"";
+  const industry=p.industry?` 行业：${p.industry}`:"";
+  const exclude=p.exclude?` 排除：${p.exclude}`:"";
+  const q=`${p.grad||"2027届"} 校招｜方向：${dirs.join(" / ")||"未设置"}${city}${industry}\n关键词：${kws.join("、")}${exclude}`;
+  const el=document.getElementById("generatedQuery"); if(el)el.textContent=q;
+  return q;
+}
+function copySearchQuery(){
+  const q=generateSearchQuery(); navigator.clipboard?.writeText(q); alert("已复制搜索词");
+}
+function applyProfileToSearch(){
+  const p=state.profile||{};
+  if((p.directions||[]).length===1) document.getElementById("dir").value=p.directions[0];
+  else document.getElementById("dir").value="";
+  document.getElementById("minScore").value="70";
+  renderJobs();switchTab("discover");
+}
+function resetProfile(){
+  if(!confirm("确认重置求职画像？岗位与投递记录不会被删除。"))return;
+  state.profile={education:"",language:"",experience:"",strengths:"",resumeText:"",directions:["项目管理","项目运营","PMO","业务运营"],customDirections:[],cities:"",grad:"2027届",industry:"",exclude:"",keywords:"需求分析、任务拆解、项目计划、进度管理、风险管理、数据分析、跨团队协作、资源协调、项目汇报、复盘优化、Excel、PowerPoint、英文、国际项目、NBS"};
+  persist();
+}
+
+function exportData(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download="秋招工作台备份.json";a.click();URL.revokeObjectURL(a.href)
+}
+async function importDataFile(e){
+  try{const txt=await e.target.files[0].text();state=JSON.parse(txt);persist()}catch(err){alert("导入失败：JSON格式不正确")}
+}
+function switchTab(id){
+  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));
+  document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id===id))
+}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+function renderAll(){
+  renderMetrics();renderJobs();renderKanban();renderProfile();
+  const r=document.getElementById("resumeText");
+  if(r && !r.value && state.profile?.resumeText) r.value=state.profile.resumeText;
+}
+renderAll();
+</script>
+</body>
+</html>
