@@ -299,7 +299,7 @@ table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:12px 10
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
 <script>
-const JOB_API_ENDPOINT = ""; // 部署后填你的岗位抓取API地址
+const JOB_API_ENDPOINT = "/api/jobs"; // Vercel Function，同域调用
 const PROFILE_KEYWORDS = [
   "项目管理","项目运营","PMO","需求分析","任务拆解","进度管理","风险管理","数据分析","跨团队协作",
   "资源协调","项目计划","复盘","项目汇报","Excel","PowerPoint","英文","国际项目","用户需求","策略分析"
@@ -447,26 +447,15 @@ async function fetchJobsByProfile(){
     try{
       const r=await fetch(JOB_API_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
       const data=await r.json();
-      (data.jobs||data).forEach(j=>state.jobs.push({...j,id:j.id||crypto.randomUUID(),created:new Date().toISOString(),status:j.status||"计划投递"}));
-      persist(); alert("已按求职画像同步岗位");
+      (data.jobs||data).forEach(j=>{
+        const exists=state.jobs.some(x=>(x.link&&j.link&&x.link===j.link) || (x.company===j.company && x.role===j.role));
+        if(!exists) state.jobs.push({...j,id:j.id||crypto.randomUUID(),created:new Date().toISOString(),status:j.status||"计划投递"});
+      });
+      persist();
       return;
-    }catch(e){alert("抓取接口调用失败，将载入与画像匹配的示例岗位。")}
+    }catch(e){console.warn("抓取接口调用失败",e);}
   }
-  const dirs=payload.directions.length?payload.directions:["项目管理"];
-  const demo=dirs.slice(0,3).map((d,i)=>({
-    company:["示例科技集团","示例消费公司","示例互联网平台"][i%3],
-    role:`${d}${d==="PMO"?"":"校招"}`,
-    city:(p.cities||"北京、上海").split(/[、,，]/)[i%2]||"北京",
-    direction:d,
-    source:"官网",
-    link:"",
-    grad:p.grad||"2027届",
-    jd:`负责${d}相关工作，包括需求分析、项目计划、数据分析、跨团队协调、进度跟踪、风险管理与复盘优化`,
-    status:"计划投递"
-  }));
-  demo.forEach(j=>state.jobs.push({...j,id:crypto.randomUUID(),created:new Date().toISOString()}));
-  persist();
-  switchTab("discover");
+  alert("抓取失败：请检查 Vercel 环境变量 SERPER_API_KEY 是否已配置。");
 }
 async function handleResume(e){
   const f=e.target.files[0]; if(!f)return;
@@ -658,7 +647,23 @@ function renderAll(){
   const r=document.getElementById("resumeText");
   if(r && !r.value && state.profile?.resumeText) r.value=state.profile.resumeText;
 }
+
+async function autoFetchOncePerDay(){
+  const key="jobWorkbenchLastAutoFetch";
+  const today=new Date().toISOString().slice(0,10);
+  if(localStorage.getItem(key)===today) return;
+  try{
+    const before=state.jobs.length;
+    await fetchJobsByProfile();
+    localStorage.setItem(key,today);
+    const added=state.jobs.length-before;
+    console.log(`今日自动抓取完成，新增 ${added} 条候选岗位`);
+  }catch(e){
+    console.warn("今日自动抓取失败：",e);
+  }
+}
 renderAll();
+setTimeout(autoFetchOncePerDay, 1200);
 </script>
 </body>
 </html>
