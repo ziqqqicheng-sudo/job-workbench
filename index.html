@@ -58,6 +58,30 @@ table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:12px 10
 .profile-status{font-size:12px;color:#6b768a}
 @media(max-width:1000px){.profile-grid{grid-template-columns:1fr}.profile-summary{grid-template-columns:1fr}}
 
+
+/* 岗位方向颜色 */
+.dir-badge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:750;white-space:nowrap}
+.dir-传统设计院{background:#e8f1ff;color:#2459a9;border:1px solid #c8dcff}
+.dir-强院下设设计院{background:#e7f8f5;color:#14766d;border:1px solid #bfeae3}
+.dir-大厂建筑{background:#f1eaff;color:#6c3cc7;border:1px solid #ddccff}
+.dir-大厂管培{background:#fff0df;color:#b86208;border:1px solid #ffd5aa}
+.dir-地产管培{background:#ffe8ef;color:#b9315b;border:1px solid #ffc4d6}
+.dir-地产运营{background:#e8f6e8;color:#2f7a38;border:1px solid #c8e8cb}
+.dir-地产建筑{background:#f5eee4;color:#8a5a1f;border:1px solid #e6d2b7}
+.dir-其他{background:#eef1f5;color:#5d6675;border:1px solid #d9dee6}
+.job-card[data-direction="传统设计院"]{border-left:5px solid #5a8fd8}
+.job-card[data-direction="强院下设设计院"]{border-left:5px solid #39a99c}
+.job-card[data-direction="大厂建筑"]{border-left:5px solid #8b62d6}
+.job-card[data-direction="大厂管培"]{border-left:5px solid #e99539}
+.job-card[data-direction="地产管培"]{border-left:5px solid #dc6588}
+.job-card[data-direction="地产运营"]{border-left:5px solid #5ca864}
+.job-card[data-direction="地产建筑"]{border-left:5px solid #a77a42}
+.job-card[data-direction="其他"]{border-left:5px solid #8b95a5}
+.info-line{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:7px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.detail-item{background:#f8faff;border:1px solid #e7ebf2;border-radius:10px;padding:8px 9px;font-size:11px;color:#5f6a7d}
+.detail-item b{color:#243047;font-weight:700}
+
 </style>
 </head>
 <body>
@@ -136,14 +160,13 @@ table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:12px 10
         <div class="field">
           <label>感兴趣的求职方向</label>
           <div class="direction-row" id="presetDirections">
-            <button class="direction-pill" data-dir="项目管理" onclick="toggleDirection(this)">项目管理</button>
-            <button class="direction-pill" data-dir="项目运营" onclick="toggleDirection(this)">项目运营</button>
-            <button class="direction-pill" data-dir="PMO" onclick="toggleDirection(this)">PMO</button>
-            <button class="direction-pill" data-dir="业务运营" onclick="toggleDirection(this)">业务运营</button>
-            <button class="direction-pill" data-dir="商业运营" onclick="toggleDirection(this)">商业运营</button>
-            <button class="direction-pill" data-dir="管培生" onclick="toggleDirection(this)">管培生</button>
-            <button class="direction-pill" data-dir="用户研究" onclick="toggleDirection(this)">用户研究</button>
-            <button class="direction-pill" data-dir="策略/咨询" onclick="toggleDirection(this)">策略/咨询</button>
+            <button class="direction-pill" data-dir="传统设计院" onclick="toggleDirection(this)">传统设计院</button>
+            <button class="direction-pill" data-dir="强院下设设计院" onclick="toggleDirection(this)">强院下设设计院</button>
+            <button class="direction-pill" data-dir="大厂建筑" onclick="toggleDirection(this)">大厂建筑</button>
+            <button class="direction-pill" data-dir="大厂管培" onclick="toggleDirection(this)">大厂管培</button>
+            <button class="direction-pill" data-dir="地产管培" onclick="toggleDirection(this)">地产管培</button>
+            <button class="direction-pill" data-dir="地产运营" onclick="toggleDirection(this)">地产运营</button>
+            <button class="direction-pill" data-dir="地产建筑" onclick="toggleDirection(this)">地产建筑</button>
           </div>
         </div>
 
@@ -200,9 +223,7 @@ table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:12px 10
       <div class="notice">“抓取今日岗位”已预留自动抓取接口。当前静态网页没有后台服务器时会使用示例数据；部署后把 <b>JOB_API_ENDPOINT</b> 配置为你的抓取接口即可自动更新。</div>
       <div class="toolbar">
         <input id="q" placeholder="搜索公司 / 岗位 / 关键词" oninput="renderJobs()">
-        <select id="dir" onchange="renderJobs()">
-          <option value="">全部方向</option><option>项目管理</option><option>项目运营</option><option>PMO</option><option>业务运营</option><option>商业运营</option><option>管培生</option>
-        </select>
+        <select id="dir" onchange="renderJobs()"><option value="">全部方向</option><option>传统设计院</option><option>强院下设设计院</option><option>大厂建筑</option><option>大厂管培</option><option>地产管培</option><option>地产运营</option><option>地产建筑</option><option>其他</option></select>
         <select id="minScore" onchange="renderJobs()">
           <option value="0">全部匹配度</option><option value="70">≥ 70</option><option value="80">≥ 80</option><option value="90">≥ 90</option>
         </select>
@@ -283,7 +304,7 @@ table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:12px 10
       <div class="field"><label>公司</label><input id="fCompany"></div>
       <div class="field"><label>岗位</label><input id="fRole"></div>
       <div class="field"><label>城市</label><input id="fCity"></div>
-      <div class="field"><label>方向</label><select id="fDirection"><option>项目管理</option><option>项目运营</option><option>PMO</option><option>业务运营</option><option>商业运营</option><option>管培生</option><option>其他</option></select></div>
+      <div class="field"><label>方向</label><select id="fDirection"><option>传统设计院</option><option>强院下设设计院</option><option>大厂建筑</option><option>大厂管培</option><option>地产管培</option><option>地产运营</option><option>地产建筑</option><option>其他</option></select></div>
       <div class="field"><label>来源</label><input id="fSource" placeholder="官网 / Boss直聘 / 牛客…"></div>
       <div class="field"><label>岗位链接</label><input id="fLink"></div>
       <div class="field"><label>毕业要求</label><input id="fGrad" placeholder="例如 2026.09-2027.08"></div>
@@ -292,7 +313,7 @@ table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:12px 10
     <div class="field"><label>JD摘要 / 关键词</label><textarea id="fJD" style="min-height:120px"></textarea></div>
     <div style="display:flex;justify-content:flex-end;gap:8px">
       <button class="btn secondary" onclick="closeModal()">取消</button>
-      <button class="btn primary" onclick="saveJob()">保存</button>
+      <button class="btn primary" id="saveJobBtn" onclick="saveJob()">保存</button>
     </div>
   </div>
 </div>
@@ -304,11 +325,26 @@ const PROFILE_KEYWORDS = [
   "项目管理","项目运营","PMO","需求分析","任务拆解","进度管理","风险管理","数据分析","跨团队协作",
   "资源协调","项目计划","复盘","项目汇报","Excel","PowerPoint","英文","国际项目","用户需求","策略分析"
 ];
+
+const DIRECTION_COLORS = {
+  "传统设计院":"传统设计院",
+  "强院下设设计院":"强院下设设计院",
+  "大厂建筑":"大厂建筑",
+  "大厂管培":"大厂管培",
+  "地产管培":"地产管培",
+  "地产运营":"地产运营",
+  "地产建筑":"地产建筑",
+  "其他":"其他"
+};
+function directionClass(d){ return "dir-" + (DIRECTION_COLORS[d] || "其他"); }
+let editingApplicationId = null;
+let editingJobId = null;
+
 const defaultResume = `天津大学建筑学硕士，米兰理工大学双学位经历。项目经验包括NBS城市更新项目、医院建筑更新、BNCT案例研究、绿色生产性更新等。具备需求分析、任务拆解、场地与案例数据整理、SWOT分析、跨团队协作、项目汇报、项目推进与阶段复盘能力。熟练Excel、PowerPoint、Word，IELTS 7.5，具备英文学习与跨文化协作能力。`;
 
 let state = JSON.parse(localStorage.getItem("autumnRecruitmentState")||"null") || {
   jobs:[
-    {id:crypto.randomUUID(),company:"联想",role:"项目管理-非技术",city:"",direction:"项目管理",source:"官网",link:"",grad:"2026.09-2027.08应届毕业生",
+    {id:crypto.randomUUID(),company:"联想",role:"项目管理-非技术",city:"",direction:"大厂管培",source:"官网",link:"",grad:"2026.09-2027.08应届毕业生",
      jd:"需求收集；项目计划；风险管控；进度跟踪；资源协调；数据分析；回归总结；系统化解决方案；项目文档",status:"计划投递",created:new Date().toISOString()}
   ],
   applications:[],
@@ -318,7 +354,7 @@ let state = JSON.parse(localStorage.getItem("autumnRecruitmentState")||"null") |
     experience:"",
     strengths:"",
     resumeText:"",
-    directions:["项目管理","项目运营","PMO","业务运营"],
+    directions:["大厂管培","地产管培","地产运营","地产建筑"],
     customDirections:[],
     cities:"",
     grad:"2027届",
@@ -329,8 +365,19 @@ let state = JSON.parse(localStorage.getItem("autumnRecruitmentState")||"null") |
 };
 
 if(!state.profile){
-  state.profile={education:"",language:"",experience:"",strengths:"",resumeText:"",directions:["项目管理","项目运营","PMO","业务运营"],customDirections:[],cities:"",grad:"2027届",industry:"",exclude:"",keywords:"需求分析、任务拆解、项目计划、进度管理、风险管理、数据分析、跨团队协作、资源协调、项目汇报、复盘优化、Excel、PowerPoint、英文、国际项目、NBS"};
+  state.profile={education:"",language:"",experience:"",strengths:"",resumeText:"",directions:["大厂管培","地产管培","地产运营","地产建筑"],customDirections:[],cities:"",grad:"2027届",industry:"",exclude:"",keywords:"需求分析、任务拆解、项目计划、进度管理、风险管理、数据分析、跨团队协作、资源协调、项目汇报、复盘优化、Excel、PowerPoint、英文、国际项目、NBS"};
 }
+
+// 兼容旧版本：给已经存在的投递补齐方向、毕业要求、JD等字段
+(state.applications||[]).forEach(a=>{
+  const j=(state.jobs||[]).find(x=>x.id===a.jobId) || {};
+  if(!a.direction) a.direction=j.direction||"其他";
+  if(a.grad===undefined) a.grad=j.grad||"";
+  if(a.jd===undefined) a.jd=j.jd||"";
+  if(a.source===undefined) a.source=j.source||"";
+  if(a.link===undefined) a.link=j.link||"";
+});
+
 function persist(){localStorage.setItem("autumnRecruitmentState",JSON.stringify(state));renderAll()}
 function scoreJob(job){
   let text = `${job.role} ${job.jd} ${job.direction} ${job.company}`.toLowerCase();
@@ -366,7 +413,7 @@ function renderJobs(){
     const s=scoreJob(j), cls=s>=80?"high":s>=60?"mid":"low";
     const kws=((state.profile?.keywords||"").split(/[、,，;\n]/).map(x=>x.trim()).filter(Boolean)).filter(k=>(`${j.role} ${j.jd}`).toLowerCase().includes(k.toLowerCase())).slice(0,5);
     return `<tr>
-      <td><b>${esc(j.company)}</b></td><td>${esc(j.role)}</td><td>${esc(j.city||"-")}</td><td><span class="badge">${esc(j.direction)}</span></td>
+      <td><b>${esc(j.company)}</b></td><td>${esc(j.role)}</td><td>${esc(j.city||"-")}</td><td><span class="dir-badge ${directionClass(j.direction)}">${esc(j.direction||"其他")}</span></td>
       <td>${esc(j.source||"-")}</td><td>${esc(j.grad||"-")}</td><td><span class="score ${cls}">${s}</span></td>
       <td>${kws.map(k=>`<span class="kw">${esc(k)}</span>`).join(" ")||"-"}</td>
       <td>
@@ -383,14 +430,22 @@ function renderKanban(){
     const apps=state.applications.filter(a=>a.status===stage);
     return `<div class="col" ondragover="event.preventDefault()" ondrop="dropCard(event,'${stage}')">
       <h3>${stage}<span class="count">${apps.length}</span></h3>
-      ${apps.map(a=>`<div class="job-card" draggable="true" ondragstart="dragCard(event,'${a.id}')">
+      ${apps.map(a=>`<div class="job-card" data-direction="${esc(a.direction||"其他")}" draggable="true" ondragstart="dragCard(event,'${a.id}')">
         <strong>${esc(a.company)} · ${esc(a.role)}</strong>
-        <div class="meta">${esc(a.city||"")} ${a.source?`｜${esc(a.source)}`:""}</div>
+        <div class="info-line">
+          <span class="dir-badge ${directionClass(a.direction)}">${esc(a.direction||"其他")}</span>
+          ${a.city?`<span class="meta">${esc(a.city)}</span>`:""}
+        </div>
+        <div class="detail-grid">
+          <div class="detail-item"><b>招聘来源</b><br>${esc(a.source||"未填写")}</div>
+          <div class="detail-item"><b>毕业要求</b><br>${esc(a.grad||"未填写")}</div>
+        </div>
         <div class="meta">更新：${new Date(a.updated||a.created).toLocaleDateString()}</div>
         <div class="actions">
-          ${a.link?`<a class="link" href="${a.link}" target="_blank">岗位链接</a>`:""}
-          <button class="btn mini secondary" onclick="advance('${a.id}')">下一步</button>
-          <button class="btn mini danger" onclick="removeApp('${a.id}')">删除</button>
+          <button class="btn mini secondary" onclick="event.stopPropagation();editApplication('${a.id}')">查看 / 编辑</button>
+          ${a.link?`<a class="link" href="${a.link}" target="_blank" onclick="event.stopPropagation()">招聘链接</a>`:""}
+          <button class="btn mini secondary" onclick="event.stopPropagation();advance('${a.id}')">下一步</button>
+          <button class="btn mini danger" onclick="event.stopPropagation();removeApp('${a.id}')">删除</button>
         </div>
       </div>`).join("")||`<div class="empty">暂无</div>`}
     </div>`;
@@ -399,7 +454,7 @@ function renderKanban(){
 function addToPipeline(jobId){
   const j=state.jobs.find(x=>x.id===jobId); if(!j)return;
   if(!state.applications.some(a=>a.jobId===jobId)){
-    state.applications.push({id:crypto.randomUUID(),jobId,company:j.company,role:j.role,city:j.city,source:j.source,link:j.link,status:"已投递",created:new Date().toISOString(),updated:new Date().toISOString()});
+    state.applications.push({id:crypto.randomUUID(),jobId,company:j.company,role:j.role,city:j.city,direction:j.direction||"其他",source:j.source,link:j.link,grad:j.grad||"",jd:j.jd||"",status:"已投递",created:new Date().toISOString(),updated:new Date().toISOString()});
   }
   j.status="已投递";persist();switchTab("pipeline");
 }
@@ -413,18 +468,82 @@ function dropCard(e,stage){const id=e.dataTransfer.getData("text/plain");const a
 function removeApp(id){state.applications=state.applications.filter(x=>x.id!==id);persist()}
 function deleteJob(id){state.jobs=state.jobs.filter(x=>x.id!==id);persist()}
 
-function openAddJob(){document.getElementById("modalTitle").textContent="添加岗位";document.getElementById("jobModal").classList.add("show")}
-function openApplication(){openAddJob();document.getElementById("fStatus").value="已投递"}
-function closeModal(){document.getElementById("jobModal").classList.remove("show")}
+function clearJobForm(){
+  ["fCompany","fRole","fCity","fSource","fLink","fGrad","fJD"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("fDirection").value="其他";
+  document.getElementById("fStatus").value="计划投递";
+}
+function openAddJob(){
+  editingApplicationId=null;
+  editingJobId=null;
+  clearJobForm();
+  document.getElementById("modalTitle").textContent="添加岗位";
+  document.getElementById("saveJobBtn").textContent="保存岗位";
+  document.getElementById("jobModal").classList.add("show");
+}
+function openApplication(){
+  openAddJob();
+  document.getElementById("modalTitle").textContent="新增投递";
+  document.getElementById("saveJobBtn").textContent="保存投递";
+  document.getElementById("fStatus").value="已投递";
+}
+function editApplication(id){
+  const a=state.applications.find(x=>x.id===id); if(!a)return;
+  editingApplicationId=id;
+  editingJobId=a.jobId||null;
+  document.getElementById("modalTitle").textContent="查看 / 编辑投递信息";
+  document.getElementById("saveJobBtn").textContent="保存修改";
+  document.getElementById("fCompany").value=a.company||"";
+  document.getElementById("fRole").value=a.role||"";
+  document.getElementById("fCity").value=a.city||"";
+  document.getElementById("fDirection").value=a.direction||"其他";
+  document.getElementById("fSource").value=a.source||"";
+  document.getElementById("fLink").value=a.link||"";
+  document.getElementById("fGrad").value=a.grad||"";
+  document.getElementById("fStatus").value=a.status||"已投递";
+  document.getElementById("fJD").value=a.jd||"";
+  document.getElementById("jobModal").classList.add("show");
+}
+function closeModal(){
+  document.getElementById("jobModal").classList.remove("show");
+  editingApplicationId=null;
+  editingJobId=null;
+}
 function saveJob(){
-  const j={id:crypto.randomUUID(),company:val("fCompany"),role:val("fRole"),city:val("fCity"),direction:val("fDirection"),source:val("fSource"),
-    link:val("fLink"),grad:val("fGrad"),status:val("fStatus"),jd:val("fJD"),created:new Date().toISOString()};
-  if(!j.company||!j.role){alert("请填写公司和岗位");return}
+  const data={
+    company:val("fCompany"),role:val("fRole"),city:val("fCity"),
+    direction:val("fDirection")||"其他",source:val("fSource"),link:val("fLink"),
+    grad:val("fGrad"),status:val("fStatus"),jd:val("fJD")
+  };
+  if(!data.company||!data.role){alert("请填写公司和岗位");return}
+
+  // 编辑已投递岗位
+  if(editingApplicationId){
+    const a=state.applications.find(x=>x.id===editingApplicationId);
+    if(a){
+      Object.assign(a,data,{updated:new Date().toISOString()});
+      // 同步回岗位库，避免两边信息不一致
+      const j=state.jobs.find(x=>x.id===(editingJobId||a.jobId));
+      if(j){
+        Object.assign(j,{
+          company:data.company,role:data.role,city:data.city,direction:data.direction,
+          source:data.source,link:data.link,grad:data.grad,jd:data.jd,status:data.status
+        });
+      }
+    }
+    closeModal();persist();return;
+  }
+
+  // 新增岗位 / 新增投递
+  const j={id:crypto.randomUUID(),...data,created:new Date().toISOString()};
   state.jobs.push(j);
   if(j.status!=="计划投递"){
-    state.applications.push({id:crypto.randomUUID(),jobId:j.id,company:j.company,role:j.role,city:j.city,source:j.source,link:j.link,status:j.status,created:new Date().toISOString(),updated:new Date().toISOString()})
+    state.applications.push({
+      id:crypto.randomUUID(),jobId:j.id,company:j.company,role:j.role,city:j.city,
+      direction:j.direction||"其他",source:j.source,link:j.link,grad:j.grad||"",jd:j.jd||"",
+      status:j.status,created:new Date().toISOString(),updated:new Date().toISOString()
+    });
   }
-  ["fCompany","fRole","fCity","fSource","fLink","fGrad","fJD"].forEach(id=>document.getElementById(id).value="");
   closeModal();persist();
 }
 function val(id){return document.getElementById(id).value.trim()}
@@ -626,7 +745,7 @@ function applyProfileToSearch(){
 }
 function resetProfile(){
   if(!confirm("确认重置求职画像？岗位与投递记录不会被删除。"))return;
-  state.profile={education:"",language:"",experience:"",strengths:"",resumeText:"",directions:["项目管理","项目运营","PMO","业务运营"],customDirections:[],cities:"",grad:"2027届",industry:"",exclude:"",keywords:"需求分析、任务拆解、项目计划、进度管理、风险管理、数据分析、跨团队协作、资源协调、项目汇报、复盘优化、Excel、PowerPoint、英文、国际项目、NBS"};
+  state.profile={education:"",language:"",experience:"",strengths:"",resumeText:"",directions:["大厂管培","地产管培","地产运营","地产建筑"],customDirections:[],cities:"",grad:"2027届",industry:"",exclude:"",keywords:"需求分析、任务拆解、项目计划、进度管理、风险管理、数据分析、跨团队协作、资源协调、项目汇报、复盘优化、Excel、PowerPoint、英文、国际项目、NBS"};
   persist();
 }
 
